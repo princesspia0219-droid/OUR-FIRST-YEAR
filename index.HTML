@@ -1,0 +1,363 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our first year - Cinematic Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
+        :root {
+            --light-pink: #FFB6C1;
+            --dark-green: #38A169;
+        }
+        
+        body {
+            font-family: 'VT323', monospace; 
+            background-color: var(--dark-green); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative; 
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: 0 0 0 5px var(--light-pink), 0 8px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 90%;
+            width: 450px;
+            position: relative;
+            z-index: 20; 
+        }
+
+        /* --- Cinematic Video Styles --- */
+        #cinematic-video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Below the content */
+            background-color: #111; /* Dark background */
+            display: none; /* Hidden by default */
+        }
+
+        #cinematic-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Maintain aspect ratio and cover the container */
+            min-width: 100%; 
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+        
+        /* Hide symbols when video is active */
+        .falling-symbols.hidden {
+            display: none;
+        }
+        
+        /* --- Original Decoration Styles --- */
+        .decoration {
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            image-rendering: pixelated;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .decoration-left {
+            background-image: url('YOUR_CANDLE_IMAGE_URL.png'); 
+            top: -20px;
+            left: -20px;
+        }
+
+        .decoration-right {
+            background-image: url('TRYMUNA.jpg'); 
+            bottom: -20px;
+            right: -20px;
+        }
+
+        .title {
+            font-weight: bold;
+            font-size: 32px;
+            color: var(--light-pink); 
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px #00000030;
+        }
+
+        .subtitle {
+            font-size: 18px; 
+            color: var(--dark-green);
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            margin: 0.75rem;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            border: 3px solid #000;
+            image-rendering: pixelated;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 0 0 #000;
+        }
+
+        .btn-yes {
+            background-color: var(--light-pink); 
+            color: white;
+        }
+
+        .btn-no {
+            background-color: var(--dark-green);
+            color: white;
+        }
+        
+        .message-box {
+            background-color: white; 
+            border: 4px solid var(--light-pink);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: left;
+            color: #333;
+            font-size: 16px;
+            white-space: pre-wrap;
+        }
+        
+        /* New image style for the Gift Slide */
+        #gift-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 3px solid var(--light-pink);
+        }
+        
+        /* Initial display states for non-main pages */
+        #denial-page, #gift-slide-page, #message-page {
+            display: none;
+        }
+        
+        .falling-symbols {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .symbol {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+        .symbol:nth-child(1) { color: var(--light-pink); animation-duration: 4s; animation-delay: 0s; left: 10%; content: '💖'; }
+        .symbol:nth-child(2) { color: white; animation-duration: 5s; animation-delay: 1s; left: 20%; content: '🌸'; }
+        .symbol:nth-child(3) { color: var(--light-pink); animation-duration: 6s; animation-delay: 2s; left: 30%; content: '✨'; }
+        .symbol:nth-child(4) { color: white; animation-duration: 4.5s; animation-delay: 3s; left: 40%; content: '🎀'; }
+        .symbol:nth-child(5) { color: var(--light-pink); animation-duration: 5.5s; animation-delay: 0.5s; left: 50%; content: '💖'; }
+        .symbol:nth-child(6) { color: white; animation-duration: 4s; animation-delay: 1.5s; left: 60%; content: '🌸'; }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="falling-symbols" id="falling-symbols">
+        <div class="symbol"></div>
+        <div class="symbol"></div>
+        <div class="symbol"></div>
+        <div class="symbol"></div>
+        <div class="symbol"></div>
+        <div class="symbol"></div>
+    </div>
+    
+    <audio id="mainSound" src="Mitski - My Love Mine All Mine.mp3.mp3" preload="auto" loop></audio>
+    <audio id="denialSound" src="NIKI - The Apartment We Won’t Share (Official Lyric Video).MP3.mp3" preload="auto" loop></audio>
+    
+    <div id="cinematic-video-container">
+        <video id="cinematic-video" src="VIDEO.MP4.MP4" loop autoplay muted playsinline></video>
+    </div>
+
+    <div class="container" id="main-page">
+        <div class="decoration decoration-left"></div> 
+        <div class="decoration decoration-right"></div> 
+        
+        <h1 class="title">Hi bebu!!</h1>
+        <p class="subtitle">baby idk how coding works pero i really tried my best so pls open this na</p>
+        
+        <button class="btn btn-yes" id="yes-btn">OMKII</button>
+        <button class="btn btn-no" id="no-btn">NO!! (If u press this button I'll suntok ur face!!</button>
+    </div>
+
+    <div class="container" id="denial-page">
+        <h1 class="title" style="font-size: 34px;">ahahaha shet sabi k na nga ba ayaw mo an sakin di mo na ako love:(((</h1>
+        <p class="subtitle">ioopen mo or babayagan kita?</p>
+        <button class="btn btn-yes" id="okay-btn">Arte, sige na nga!</button>
+    </div>
+    
+    <div class="container" id="gift-slide-page">
+        <h1 class="title">Hi there, baby ko!!!</h1>
+        <p class="subtitle">HAPPY 1 YEAR OF LOVEEEE!!.</p>
+        
+        
+        <div class="message-box" style="text-align: JUSTIFY; margin-bottom: 1.0rem;">
+To my dearest, AJ! 
+            
+The past 2 years (yes, kasama nung niligawan mo pa lang ako) have been so so so amazing!! It's genuinely hard to imagine my life without you now :(( I truly never thought I would be lucky enough to meet someone as incredibly special as you are. You are, without a doubt, the best thing that has ever happened to me. Thank you for choosing me. Thank you for loving me. Thank you for understanding me. Thank you for trying to be more gentle with me. Thank you for always cheering me up, kahit alam kong sawang sawa ka na kasi gaya ng sabi mo hindi ako maunong tumanggap ng mga ganoon. Thank you for making me feel safe and secure, and for always putting up with my attitude. Thank you for all the meals you've paid for, and for giving me babies (plushies)! Yayaya!! 
+        </div>
+        
+        <button class="btn btn-yes" id="continue-btn">pindot this pa, im not yet done!</button>
+    </div>
+
+    <div class="container" id="message-page">
+        <h1 class="title">HEHE YAY!! THANKS, BABY!!</h1>
+        <div class="message-box">
+I promise to support you sa lahat ng decisions mo and sa plans mo. Even if I'm scared na malayo sa'yo, I know na I should never pigil u. I'm honestly so proud of you kasi, OMG, kahit ngayon iniisip mo na agad ang future. Sana kasama me doon, ahaha please include meee!!!
+
+I will always pray for you—na sana whatever comes your way, you would be able to overcome it. I know how hard it is for you to open up your feelings sa akin, and I hope that soon you'll trust me enough to tell me how you feel and what you feel. I love you so much more than you'll ever know. Sayo lang ako ganito and magiging ganito. 
+
+Love, Aemi
+        </div>
+        <button class="btn btn-no mt-4" id="back-btn">YAY!</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainPage = document.getElementById('main-page');
+            const denialPage = document.getElementById('denial-page');
+            const giftSlidePage = document.getElementById('gift-slide-page'); // NEW PAGE
+            const messagePage = document.getElementById('message-page');
+            const videoContainer = document.getElementById('cinematic-video-container');
+            const cinematicVideo = document.getElementById('cinematic-video');
+            const fallingSymbols = document.getElementById('falling-symbols');
+            
+            const mainSound = document.getElementById('mainSound'); 
+            const denialSound = document.getElementById('denialSound');
+            
+            const noBtn = document.getElementById('no-btn');
+            const yesBtn = document.getElementById('yes-btn');
+            const okayBtn = document.getElementById('okay-btn'); 
+            const continueBtn = document.getElementById('continue-btn'); // NEW BUTTON
+            const backBtn = document.getElementById('back-btn'); 
+            
+            function showPage(pageToShow) {
+                // Hide all pages
+                mainPage.style.display = 'none';
+                denialPage.style.display = 'none';
+                giftSlidePage.style.display = 'none'; // Include new page
+                messagePage.style.display = 'none';
+                
+                // Show the selected page
+                pageToShow.style.display = 'block';
+            }
+            
+            function playMainSound() {
+                if (mainSound) {
+                    denialSound.pause(); // Stop denial sound if playing
+                    mainSound.currentTime = 0;
+                    mainSound.play().catch(e => {
+                        console.error("Main audio playback failed:", e);
+                    });
+                }
+            }
+
+            function playDenialSound() {
+                if (denialSound) {
+                    mainSound.pause(); // Stop main sound if playing
+                    denialSound.currentTime = 0;
+                    denialSound.play().catch(e => {
+                        console.error("Denial audio playback failed:", e);
+                    });
+                }
+            }
+            
+            function stopAllSound() {
+                if (mainSound) mainSound.pause();
+                if (denialSound) denialSound.pause();
+            }
+
+            function startCinematicView() {
+                videoContainer.style.display = 'block';
+                fallingSymbols.classList.add('hidden');
+                cinematicVideo.play().catch(e => {
+                    console.warn("Video playback interrupted (likely autoplay policy). Video is still loaded.");
+                });
+            }
+
+            function stopCinematicView() {
+                videoContainer.style.display = 'none';
+                fallingSymbols.classList.remove('hidden');
+                cinematicVideo.pause();
+                cinematicVideo.currentTime = 0; // Rewind the video
+            }
+
+            // Button Logic
+            
+            // 1. NO button goes to DENIAL page, plays NIKI song
+            noBtn.addEventListener('click', function() {
+                stopAllSound(); 
+                stopCinematicView();
+                playDenialSound(); // Start NIKI song
+                showPage(denialPage);
+            });
+            
+            // 2. YES/OKAY button goes to GIFT SLIDE, starts cinematic view, plays MITSKI song
+            yesBtn.addEventListener('click', function() {
+                stopAllSound(); 
+                playMainSound(); // Start Mitski song
+                startCinematicView();
+                showPage(giftSlidePage); // Go to new slide
+            });
+            
+            okayBtn.addEventListener('click', function() {
+                stopAllSound(); 
+                playMainSound(); // Start Mitski song
+                startCinematicView();
+                showPage(giftSlidePage); // Go to new slide
+            });
+            
+            // 3. CONTINUE button goes from GIFT SLIDE to MESSAGE PAGE
+            continueBtn.addEventListener('click', function() {
+                showPage(messagePage);
+            });
+            
+            // 4. BACK BUTTON (from Message Page) stops everything and returns to main page
+            backBtn.addEventListener('click', function() {
+                stopAllSound(); 
+                stopCinematicView();
+                showPage(mainPage); 
+            });
+        });
+    </script>
+</body>
+</html>
